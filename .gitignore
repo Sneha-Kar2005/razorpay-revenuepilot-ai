@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Env / secrets
+.env
+.env.local
+.env.*.local
+backend/.env
+frontend/.env
+
+# Build output
+dist/
+build/
+frontend/dist/
+backend/dist/
+
+# Database
+*.db
+*.db-journal
+backend/prisma/dev.db
+backend/prisma/*.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test / coverage
+coverage/
+
+# Playwright
+tests/node_modules/
+tests/test-results/
+tests/playwright-report/
+frontend/playwright-report/
+frontend/test-results/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Video production working files (large binaries kept out of git history)
+pitch/work/
+pitch/*.wav
+pitch/*.png
+!pitch/README.md

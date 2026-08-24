@@ -1,0 +1,275 @@
+// RevenuePilot AI - data model
+// Money is always stored as an integer number of paise (smallest INR unit).
+// Never store money as a float.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Merchant {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  mode      String   @default("DEMO") // DEMO | RAZORPAY_TEST
+  createdAt DateTime @default(now())
+
+  customers    Customer[]
+  payments     Payment[]
+  receivables  Receivable[]
+  riskCases    RevenueRiskCase[]
+}
+
+model Customer {
+  id                 String   @id @default(cuid())
+  merchantId         String
+  merchant           Merchant @relation(fields: [merchantId], references: [id])
+  name               String
+  email              String
+  phone              String
+  segment            String   @default("STANDARD") // VIP | HIGH_VALUE | STANDARD | NEW
+  lifetimeValuePaise Int      @default(0)
+  optedOutOfContact  Boolean  @default(false)
+  createdAt          DateTime @default(now())
+
+  payments    Payment[]
+  receivables Receivable[]
+  riskCases   RevenueRiskCase[]
+
+  @@index([merchantId])
+}
+
+model Payment {
+  id                  String   @id @default(cuid())
+  merchantId          String
+  merchant            Merchant @relation(fields: [merchantId], references: [id])
+  customerId          String
+  customer            Customer @relation(fields: [customerId], references: [id])
+  razorpayOrderId     String?
+  razorpayPaymentId   String?
+  amountPaise         Int
+  currency            String   @default("INR")
+  method              String // card | upi | netbanking | wallet | emi
+  status              String // created | authorized | captured | failed | refunded
+  errorCode           String?
+  errorDescription    String?
+  errorSource         String?
+  errorStep           String?
+  errorReason         String?
+  retryCount          Int      @default(0)
+  createdAt           DateTime @default(now())
+  capturedAt          DateTime?
+
+  attempts  PaymentAttempt[]
+  riskCases RevenueRiskCase[]
+
+  @@index([merchantId])
+  @@index([status])
+}
+
+model PaymentAttempt {
+  id               String   @id @default(cuid())
+  paymentId        String
+  payment          Payment  @relation(fields: [paymentId], references: [id])
+  attemptNumber    Int
+  status           String
+  method           String
+  errorCode        String?
+  errorDescription String?
+  createdAt        DateTime @default(now())
+
+  @@index([paymentId])
+}
+
+model Receivable {
+  id             String   @id @default(cuid())
+  merchantId     String
+  merchant       Merchant @relation(fields: [merchantId], references: [id])
+  customerId     String
+  customer       Customer @relation(fields: [customerId], references: [id])
+  invoiceNumber  String
+  amountPaise    Int
+  dueDate        DateTime
+  status         String   @default("OPEN") // OPEN | OVERDUE | PARTIALLY_PAID | PAID | WRITTEN_OFF
+  daysOverdue    Int      @default(0)
+  createdAt      DateTime @default(now())
+
+  riskCases RevenueRiskCase[]
+
+  @@index([merchantId])
+}
+
+model RevenueRiskCase {
+  id                String   @id @default(cuid())
+  merchantId        String
+  merchant          Merchant @relation(fields: [merchantId], references: [id])
+  customerId        String
+  customer          Customer @relation(fields: [customerId], references: [id])
+  sourceType        String // FAILED_PAYMENT | CHECKOUT_ABANDONED | SUBSCRIPTION_DEGRADED | RECEIVABLE_OVERDUE
+  paymentId         String?
+  payment           Payment? @relation(fields: [paymentId], references: [id])
+  receivableId      String?
+  receivable        Receivable? @relation(fields: [receivableId], references: [id])
+  amountAtRiskPaise Int
+  currency          String   @default("INR")
+  riskCategory       String  // e.g. bank_decline, insufficient_funds, checkout_abandonment...
+  priorityScore      Float   @default(0)
+  status             String  @default("DETECTED")
+  // DETECTED | DIAGNOSED | STRATEGY_SELECTED | POLICY_REVIEW | AWAITING_APPROVAL |
+  // ACTION_IN_PROGRESS | RECOVERED | PARTIALLY_RECOVERED | FAILED | ESCALATED | STOPPED
+  attemptsMade        Int     @default(0)
+  maxAttempts         Int     @default(2)
+  nextEligibleAt      DateTime?
+  recoveredAmountPaise Int    @default(0)
+  detectedAt          DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  agentDecisions   AgentDecision[]
+  policyDecisions  PolicyDecision[]
+  actions          RecoveryAction[]
+  outcomes         RecoveryOutcome[]
+  approvalRequests ApprovalRequest[]
+  auditEvents      AuditEvent[]
+
+  @@index([merchantId])
+  @@index([status])
+  @@index([sourceType])
+}
+
+model AgentDecision {
+  id                          String   @id @default(cuid())
+  caseId                      String
+  case                        RevenueRiskCase @relation(fields: [caseId], references: [id])
+  provider                    String // "claude" | "simulated"
+  modelId                     String?
+  rootCause                   String
+  confidence                  Float
+  signals                     String // JSON string array
+  recommendedStrategyCode     String
+  recommendedReason           String
+  expectedRecoveryProbability Float
+  expectedRecoveredAmountPaise Int
+  maxAttempts                 Int
+  cooldownHours                Int
+  stoppingConditions          String // JSON string array
+  escalationCondition         String
+  complianceNotes             String
+  rawModelOutput               String // full JSON payload for audit
+  createdAt                    DateTime @default(now())
+
+  @@index([caseId])
+}
+
+model RecoveryStrategy {
+  id          String @id @default(cuid())
+  code        String @unique // SMART_RETRY, DELAYED_RETRY, PAYMENT_LINK, REMINDER, ALT_METHOD, ESCALATION, RECEIVABLE_FOLLOWUP, STOP
+  name        String
+  description String
+  category    String
+
+  actions RecoveryAction[]
+}
+
+model PolicyDecision {
+  id              String   @id @default(cuid())
+  caseId          String
+  case            RevenueRiskCase @relation(fields: [caseId], references: [id])
+  agentDecisionId String
+  allowed         Boolean
+  requiresApproval Boolean
+  reasonCodes     String // JSON string array
+  appliedRules    String // JSON string array
+  createdAt       DateTime @default(now())
+
+  @@index([caseId])
+}
+
+model ApprovalRequest {
+  id         String   @id @default(cuid())
+  caseId     String
+  case       RevenueRiskCase @relation(fields: [caseId], references: [id])
+  reason     String
+  status     String   @default("PENDING") // PENDING | APPROVED | REJECTED
+  requestedAt DateTime @default(now())
+  decidedAt  DateTime?
+  decidedBy  String?
+  notes      String?
+
+  @@index([caseId])
+}
+
+model RecoveryAction {
+  id                  String   @id @default(cuid())
+  caseId              String
+  case                RevenueRiskCase @relation(fields: [caseId], references: [id])
+  strategyId          String
+  strategy            RecoveryStrategy @relation(fields: [strategyId], references: [id])
+  attemptNumber       Int
+  status              String // PLANNED | EXECUTING | SUCCEEDED | FAILED | RETRY_SCHEDULED | STOPPED | ESCALATED
+  channel             String // razorpay_retry | payment_link | sms | email | manual
+  idempotencyKey      String   @unique
+  executedAt          DateTime?
+  resultSummary        String?
+  apiResponseSummary   String? // JSON string
+  recoveredAmountPaise Int?
+  failureCode          String?
+  createdAt            DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  outcomes RecoveryOutcome[]
+
+  @@index([caseId])
+  @@index([status])
+}
+
+model RecoveryOutcome {
+  id                       String   @id @default(cuid())
+  caseId                   String
+  case                     RevenueRiskCase @relation(fields: [caseId], references: [id])
+  actionId                 String
+  action                   RecoveryAction @relation(fields: [actionId], references: [id])
+  outcome                  String // SUCCESS | FAILURE | PARTIAL
+  recoveredAmountPaise     Int
+  recoveryCostPaise        Int      @default(0)
+  timeToRecoverySeconds    Int?
+  createdAt                DateTime @default(now())
+
+  @@index([caseId])
+}
+
+model AuditEvent {
+  id               String   @id @default(cuid())
+  caseId           String?
+  case             RevenueRiskCase? @relation(fields: [caseId], references: [id])
+  entityType       String // CASE | PAYMENT | ACTION | POLICY | WEBHOOK | APPROVAL | SYSTEM
+  entityId         String
+  eventType        String
+  actor            String // "agent" | "policy_engine" | "system" | "merchant:<id>" | "razorpay_webhook"
+  action           String
+  previousState    String? // JSON
+  newState         String? // JSON
+  aiRecommendation String? // JSON
+  policyDecision   String? // JSON
+  executionResult  String? // JSON
+  amountPaise      Int?
+  createdAt        DateTime @default(now())
+
+  @@index([caseId])
+  @@index([entityType])
+  @@index([createdAt])
+}
+
+model WebhookEvent {
+  id              String   @id @default(cuid())
+  razorpayEventId String?  @unique
+  eventType       String
+  payload         String // raw JSON
+  signatureValid  Boolean
+  processed       Boolean  @default(false)
+  processedAt     DateTime?
+  createdAt       DateTime @default(now())
+}
