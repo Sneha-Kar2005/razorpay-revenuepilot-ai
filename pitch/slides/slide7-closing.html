@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg:#0a0e17; --surface:#10151f; --border:#232b3a; --text:#e7ebf3; --muted:#94a1b8; --accent:#6366f1; --accent2:#818cf8; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body{ width:1920px;height:1080px;background:var(--bg);font-family:'Inter',sans-serif;overflow:hidden; }
+  body{ padding:120px 140px; display:flex; flex-direction:column; justify-content:center;
+    background-image: radial-gradient(circle at 85% 15%, rgba(99,102,241,0.16), transparent 50%); }
+  .eyebrow { color:var(--accent2); font-weight:700; letter-spacing:3px; font-size:20px; text-transform:uppercase; margin-bottom:24px; }
+  h1 { color:var(--text); font-size:78px; font-weight:800; letter-spacing:-1.5px; max-width:1400px; line-height:1.12; margin-bottom:48px; }
+  .row { display:flex; gap:28px; margin-bottom:64px; }
+  .chip { border:1px solid var(--border); background:var(--surface); border-radius:14px; padding:22px 30px; font-size:20px; color:var(--text); font-weight:600; }
+  .statement { font-size:30px; color:var(--muted); max-width:1300px; line-height:1.6; margin-bottom:56px; }
+  .foot { display:flex; align-items:center; gap:20px; }
+  .mark { width:64px; height:64px; border-radius:16px; background:linear-gradient(135deg,var(--accent),var(--accent2)); display:flex; align-items:center; justify-content:center; color:white; font-weight:800; font-size:26px; }
+  .name { font-size:28px; font-weight:800; color:var(--text); }
+  .sub { font-size:18px; color:var(--muted); }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Why Razorpay</div>
+  <h1>Built on real Razorpay rails, ready for real credentials.</h1>
+  <div class="row">
+    <div class="chip">Payment Links API</div>
+    <div class="chip">Orders API</div>
+    <div class="chip">Signed Webhooks (HMAC-SHA256)</div>
+    <div class="chip">TEST mode, live-key ready</div>
+  </div>
+  <div class="statement">Razorpay already owns the payment failure. RevenuePilot AI owns what happens next &mdash; bounded, audited, and built to turn that failure into recovered revenue.</div>
+  <div class="foot">
+    <div class="mark">RP</div>
+    <div>
+      <div class="name">RevenuePilot AI</div>
+      <div class="sub">Razorpay AI Builder Internship 2026 &middot; Track 03: AI Revenue Recovery</div>
+    </div>
+  </div>
+</body>
+</html>

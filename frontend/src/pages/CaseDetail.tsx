@@ -142,7 +142,7 @@ export function CaseDetail() {
               </div>
               <div>
                 <span className="text-xs text-text-faint block mb-1">Signals</span>
-                <ul className="text-xs text-text-muted list-disc list-inside space-y-0.5">
+                <ul className="text-xs text-text-muted list-disc list-inside space-y-0.5 break-all">
                   {(JSON.parse(latestDecision.signals) as string[]).map((s, i) => (
                     <li key={i}>{s}</li>
                   ))}
@@ -175,7 +175,7 @@ export function CaseDetail() {
                   </div>
                   <div>
                     <span className="text-xs text-text-faint block mb-1">Reason codes</span>
-                    <ul className="text-xs text-text-muted list-disc list-inside space-y-0.5">
+                    <ul className="text-xs text-text-muted list-disc list-inside space-y-0.5 break-all">
                       {(JSON.parse(p.reasonCodes) as string[]).map((s, i) => (
                         <li key={i}>{s}</li>
                       ))}

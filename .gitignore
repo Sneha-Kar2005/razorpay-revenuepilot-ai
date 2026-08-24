@@ -45,8 +45,9 @@ Thumbs.db
 !.vscode/extensions.json
 .idea/
 
-# Video production working files (large binaries kept out of git history)
+# Video production working files (large binaries kept out of git history).
+# The final MP4 is distributed via a GitHub Release asset, not the git tree.
 pitch/work/
 pitch/*.wav
 pitch/*.png
-!pitch/README.md
+pitch/*.mp4

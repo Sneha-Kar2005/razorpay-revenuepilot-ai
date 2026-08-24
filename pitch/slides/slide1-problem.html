@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0e17; --surface: #10151f; --border: #232b3a;
+    --text: #e7ebf3; --muted: #94a1b8; --faint: #5b6478;
+    --accent: #6366f1; --accent2: #818cf8; --danger: #ef4444; --warning: #f59e0b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; background: var(--bg); font-family: 'Inter', sans-serif; overflow: hidden; }
+  body {
+    display: flex; flex-direction: column; justify-content: center; padding: 140px;
+    background-image: radial-gradient(circle at 15% 15%, rgba(99,102,241,0.14), transparent 45%),
+                       radial-gradient(circle at 85% 85%, rgba(239,68,68,0.10), transparent 45%);
+  }
+  .eyebrow { color: var(--accent2); font-weight: 700; letter-spacing: 3px; font-size: 22px; text-transform: uppercase; margin-bottom: 28px; }
+  h1 { color: var(--text); font-size: 92px; font-weight: 800; line-height: 1.08; letter-spacing: -2px; max-width: 1500px; }
+  .cards { display: flex; gap: 32px; margin-top: 72px; }
+  .card { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 44px 40px; }
+  .card .n { font-size: 56px; font-weight: 800; color: var(--danger); margin-bottom: 12px; }
+  .card .l { font-size: 26px; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+  .card .d { font-size: 19px; color: var(--muted); line-height: 1.5; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">Razorpay AI Builder Internship 2026 &middot; Track 03: AI Revenue Recovery</div>
+  <h1>Revenue is leaking &mdash;<br/>quietly, every day.</h1>
+  <div class="cards">
+    <div class="card">
+      <div class="n">Failed payments</div>
+      <div class="l">Declines, expired cards, OTP failures</div>
+      <div class="d">Retried blindly, or never retried at all.</div>
+    </div>
+    <div class="card">
+      <div class="n">Abandoned checkouts</div>
+      <div class="l">Started, never finished</div>
+      <div class="d">No follow-up, or the same generic nudge for everyone.</div>
+    </div>
+    <div class="card">
+      <div class="n">Overdue receivables</div>
+      <div class="l">B2B invoices ageing past due</div>
+      <div class="d">No structured chaser until someone notices, months later.</div>
+    </div>
+  </div>
+</body>
+</html>

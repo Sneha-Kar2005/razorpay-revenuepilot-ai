@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg:#0a0e17; --surface:#10151f; --border:#232b3a; --text:#e7ebf3; --muted:#94a1b8; --faint:#5b6478;
+          --accent:#6366f1; --accent2:#818cf8; --success:#22c55e; --warning:#f59e0b; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body{ width:1920px;height:1080px;background:var(--bg);font-family:'Inter',sans-serif;overflow:hidden; }
+  body{ padding:110px 140px; }
+  .eyebrow { color:var(--accent2); font-weight:700; letter-spacing:3px; font-size:20px; text-transform:uppercase; margin-bottom:20px; }
+  h1 { color:var(--text); font-size:66px; font-weight:800; letter-spacing:-1.5px; margin-bottom:56px; }
+  .flow { display:flex; align-items:center; gap:0; }
+  .step { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:36px 28px; text-align:center; }
+  .step .i { font-size:26px; font-weight:800; color:var(--accent2); font-family:'JetBrains Mono',monospace; margin-bottom:14px; }
+  .step .t { font-size:26px; font-weight:700; color:var(--text); margin-bottom:10px; }
+  .step .d { font-size:16px; color:var(--muted); line-height:1.45; }
+  .arrow { width:56px; text-align:center; color:var(--faint); font-size:34px; }
+  .split { display:flex; gap:32px; margin-top:56px; }
+  .box { flex:1; border-radius:20px; padding:36px 40px; border:1px solid var(--border); }
+  .box.ai { background:rgba(99,102,241,0.08); border-color:rgba(99,102,241,0.35); }
+  .box.policy { background:rgba(34,197,94,0.08); border-color:rgba(34,197,94,0.35); }
+  .box .h { font-size:24px; font-weight:800; margin-bottom:10px; }
+  .box.ai .h { color:var(--accent2); }
+  .box.policy .h { color:var(--success); }
+  .box .p { font-size:19px; color:var(--muted); line-height:1.55; }
+</style>
+</head>
+<body>
+  <div class="eyebrow">How it works</div>
+  <h1>One loop, run on every case.</h1>
+  <div class="flow">
+    <div class="step"><div class="i">01</div><div class="t">Detect</div><div class="d">Deterministic code reads real payment &amp; invoice data</div></div>
+    <div class="arrow">&rarr;</div>
+    <div class="step"><div class="i">02</div><div class="t">Diagnose</div><div class="d">AI grounds a root cause in the given signals only</div></div>
+    <div class="arrow">&rarr;</div>
+    <div class="step"><div class="i">03</div><div class="t">Decide</div><div class="d">Policy engine authorizes, bounds, or blocks</div></div>
+    <div class="arrow">&rarr;</div>
+    <div class="step"><div class="i">04</div><div class="t">Act</div><div class="d">Bounded, idempotent executor runs the strategy</div></div>
+    <div class="arrow">&rarr;</div>
+    <div class="step"><div class="i">05</div><div class="t">Verify</div><div class="d">Integer-paise ledger, full audit trail</div></div>
+  </div>
+  <div class="split">
+    <div class="box ai">
+      <div class="h">The AI only recommends</div>
+      <div class="p">Root cause, confidence, strategy, expected recovery &mdash; always a schema-validated structured decision, never free text that could move money.</div>
+    </div>
+    <div class="box policy">
+      <div class="h">Deterministic code authorizes</div>
+      <div class="p">Retry caps, cooldowns, opt-outs, suspicious-transaction blocks, and approval thresholds for high-value cases &mdash; code the AI cannot override.</div>
+    </div>
+  </div>
+</body>
+</html>
